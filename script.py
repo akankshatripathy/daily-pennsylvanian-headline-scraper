@@ -23,29 +23,20 @@ import loguru
 
 def scrape_crossword_title():
     """
-    Scrapes the title of the latest crossword puzzle from The Daily Pennsylvanian website.
-    
+    Scrapes the main headline from The Daily Pennsylvanian home page.
     Returns:
-        str: The title of the latest crossword puzzle if found, otherwise an empty string.
+        str: The headline text if found, otherwise an empty string.
     """
-    req_crosswords = requests.get("https://www.thedp.com/section/crosswords")
-    loguru.logger.info(f"Request URL for crosswords: {req_crosswords.url}")
-    loguru.logger.info(f"Request status code for crosswords: {req_crosswords.status_code}")
-    
-    if req_crosswords.ok:
-        soup_crosswords = bs4.BeautifulSoup(req_crosswords.text, "html.parser")
-        crossword_title_tag = soup_crosswords.find("h3", class_="standard-link")
-        
-        if crossword_title_tag:
-            crossword_title = crossword_title_tag.text.strip()
-            loguru.logger.info(f"Crossword title: {crossword_title}")
-            return crossword_title
-        else:
-            loguru.logger.warning("Latest crossword title not found.")
-    else:
-        loguru.logger.warning("Failed to fetch the crossword page.")
-    
-    return ""
+    req = requests.get("https://www.thedp.com")
+    loguru.logger.info(f"Request URL: {req.url}")
+    loguru.logger.info(f"Request status code: {req.status_code}")
+
+    if req.ok:
+        soup = bs4.BeautifulSoup(req.text, "html.parser")
+        target_element = soup.find("a", class_="header_section")
+        data_point = "" if target_element is None else target_element.text
+        loguru.logger.info(f"Data point: {data_point}")
+        return data_point
 
 
 
