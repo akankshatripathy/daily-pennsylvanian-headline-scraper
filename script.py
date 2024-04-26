@@ -17,6 +17,10 @@ import requests
 import bs4
 import loguru
 
+import requests
+import bs4
+import loguru
+
 def scrape_crossword_title():
     """
     Scrapes the title of the latest crossword puzzle from The Daily Pennsylvanian website.
@@ -30,23 +34,14 @@ def scrape_crossword_title():
     
     if req_crosswords.ok:
         soup_crosswords = bs4.BeautifulSoup(req_crosswords.text, "html.parser")
-        latest_crossword_link = soup_crosswords.find("h3", class_="standard-link")
+        crossword_title_tag = soup_crosswords.find("h3", class_="standard-link")
         
-        if latest_crossword_link:
-            latest_crossword_url = latest_crossword_link.find("a")["href"]
-            req_latest_crossword = requests.get(latest_crossword_url)
-            loguru.logger.info(f"Request URL for latest crossword: {req_latest_crossword.url}")
-            loguru.logger.info(f"Request status code for latest crossword: {req_latest_crossword.status_code}")
-            
-            if req_latest_crossword.ok:
-                soup_latest_crossword = bs4.BeautifulSoup(req_latest_crossword.text, "html.parser")
-                crossword_title = soup_latest_crossword.find("h1", class_="section-title").text.strip()
-                loguru.logger.info(f"Crossword title: {crossword_title}")
-                return crossword_title
-            else:
-                loguru.logger.warning("Failed to fetch the latest crossword page.")
+        if crossword_title_tag:
+            crossword_title = crossword_title_tag.text.strip()
+            loguru.logger.info(f"Crossword title: {crossword_title}")
+            return crossword_title
         else:
-            loguru.logger.warning("Latest crossword link not found.")
+            loguru.logger.warning("Latest crossword title not found.")
     else:
         loguru.logger.warning("Failed to fetch the crossword page.")
     
