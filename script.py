@@ -38,7 +38,7 @@ def scrape_data_point():
             if featured_page_req.ok:
                 # Parse the featured page to find the "Encampment at Penn" headline
                 featured_soup = bs4.BeautifulSoup(featured_page_req.text, "html.parser")
-                headline_element = featured_soup.select_one(".special-edition a[href*='encampment-at-penn']")
+                headline_element = featured_soup.select_one("h1.entry-title")
                 data_point = "" if headline_element is None else headline_element.text
                 loguru.logger.info(f"Data point: {data_point}")
                 return data_point
