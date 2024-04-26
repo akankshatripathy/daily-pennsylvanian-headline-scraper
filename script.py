@@ -15,35 +15,21 @@ import loguru
 
 def scrape_data_point():
     """
-    Scrapes the headline article from The Daily Pennsylvanian's featured page.
+    Scrapes the main headline from The Daily Pennsylvanian home page.
+
     Returns:
         str: The headline text if found, otherwise an empty string.
     """
-    # First, make a request to the main page
-    main_page_req = requests.get("https://www.thedp.com")
-    loguru.logger.info(f"Request URL: {main_page_req.url}")
-    loguru.logger.info(f"Request status code: {main_page_req.status_code}")
+    req = requests.get("https://www.thedp.com")
+    loguru.logger.info(f"Request URL: {req.url}")
+    loguru.logger.info(f"Request status code: {req.status_code}")
 
-    if main_page_req.ok:
-        # Parse the main page to find the link to the featured page
-        main_soup = bs4.BeautifulSoup(main_page_req.text, "html.parser")
-        featured_page_link = main_soup.select_one("h3.frontpage-section > a")
-
-        if featured_page_link:
-            featured_page_url = featured_page_link.get("href")
-            featured_page_req = requests.get(featured_page_url)
-            loguru.logger.info(f"Request URL: {featured_page_req.url}")
-            loguru.logger.info(f"Request status code: {featured_page_req.status_code}")
-
-            if featured_page_req.ok:
-                # Parse the featured page to find the "Encampment at Penn" headline
-                featured_soup = bs4.BeautifulSoup(featured_page_req.text, "html.parser")
-                headline_element = featured_soup.select_one("h1.entry-title")
-                data_point = "" if headline_element is None else headline_element.text
-                loguru.logger.info(f"Data point: {data_point}")
-                return data_point
-
-    return ""
+    if req.ok:
+        soup = bs4.BeautifulSoup(req.text, "html.parser")
+        target_element = soup.find("a", class_="frontpage-link")
+        data_point = "" if target_element is None else target_element.text
+        loguru.logger.info(f"Data point: {data_point}")
+        return data_point
 
 
 if __name__ == "__main__":
