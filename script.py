@@ -13,6 +13,10 @@ import requests
 import loguru
 
 
+import requests
+import bs4
+import loguru
+
 def scrape_crossword_title():
     """
     Scrapes the title of the latest crossword puzzle from The Daily Pennsylvanian website.
@@ -47,6 +51,11 @@ def scrape_crossword_title():
         loguru.logger.warning("Failed to fetch the crossword page.")
     
     return ""
+
+# Example usage:
+# crossword_title = scrape_crossword_title()
+# print(crossword_title)
+
 
 
 if __name__ == "__main__":
