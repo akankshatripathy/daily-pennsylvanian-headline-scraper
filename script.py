@@ -35,7 +35,7 @@ def scrape_crossword_title():
 
     if req.ok:
         soup = bs4.BeautifulSoup(req.text, "html.parser")
-        all_opinions = soup.find_all("h3", class_ = "standard-link")
+        all_news = soup.find_all("h3", class_ = "standard-link")
         for new in all_news:
             news_map = {}
             title = news.text
