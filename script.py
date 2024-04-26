@@ -13,23 +13,40 @@ import requests
 import loguru
 
 
-def scrape_data_point():
+def scrape_crossword_title():
     """
-    Scrapes the main headline from The Daily Pennsylvanian home page.
-
+    Scrapes the title of the latest crossword puzzle from The Daily Pennsylvanian website.
+    
     Returns:
-        str: The headline text if found, otherwise an empty string.
+        str: The title of the latest crossword puzzle if found, otherwise an empty string.
     """
-    req = requests.get("https://www.thedp.com")
-    loguru.logger.info(f"Request URL: {req.url}")
-    loguru.logger.info(f"Request status code: {req.status_code}")
-
-    if req.ok:
-        soup = bs4.BeautifulSoup(req.text, "html.parser")
-        target_element = soup.find("a", class_="frontpage-link")
-        data_point = "" if target_element is None else target_element.text
-        loguru.logger.info(f"Data point: {data_point}")
-        return data_point
+    req_crosswords = requests.get("https://www.thedp.com/crosswords")
+    loguru.logger.info(f"Request URL for crosswords: {req_crosswords.url}")
+    loguru.logger.info(f"Request status code for crosswords: {req_crosswords.status_code}")
+    
+    if req_crosswords.ok:
+        soup_crosswords = bs4.BeautifulSoup(req_crosswords.text, "html.parser")
+        latest_crossword_link = soup_crosswords.find("a", class_="latest-puzzle")
+        
+        if latest_crossword_link:
+            latest_crossword_url = latest_crossword_link["href"]
+            req_latest_crossword = requests.get(latest_crossword_url)
+            loguru.logger.info(f"Request URL for latest crossword: {req_latest_crossword.url}")
+            loguru.logger.info(f"Request status code for latest crossword: {req_latest_crossword.status_code}")
+            
+            if req_latest_crossword.ok:
+                soup_latest_crossword = bs4.BeautifulSoup(req_latest_crossword.text, "html.parser")
+                crossword_title = soup_latest_crossword.find("h1", class_="title").text.strip()
+                loguru.logger.info(f"Crossword title: {crossword_title}")
+                return crossword_title
+            else:
+                loguru.logger.warning("Failed to fetch the latest crossword page.")
+        else:
+            loguru.logger.warning("Latest crossword link not found.")
+    else:
+        loguru.logger.warning("Failed to fetch the crossword page.")
+    
+    return ""
 
 
 if __name__ == "__main__":
