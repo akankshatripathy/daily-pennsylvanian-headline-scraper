@@ -27,7 +27,7 @@ def scrape_crossword_title():
     Returns:
         str: The headline text if found, otherwise an empty string.
     """
-    req = requests.get("https://www.thedp.com/section/news")
+    req = requests.get("https://www.thedp.com/section/opinion")
     loguru.logger.info(f"Request URL: {req.url}")
     loguru.logger.info(f"Request status code: {req.status_code}")
 
@@ -35,8 +35,8 @@ def scrape_crossword_title():
 
     if req.ok:
         soup = bs4.BeautifulSoup(req.text, "html.parser")
-        all_news = soup.find_all("h3", class_ = "standard-link")
-        for news in all_news:
+        all_ops = soup.find_all("h3", class_ = "standard-link")
+        for news in all_ops:
             news_map = {}
             title = news.text
             news_map["title"] = title
