@@ -15,7 +15,7 @@ import loguru
 
 def scrape_data_point():
     """
-    Scrapes the headline for the "Encampment at Penn" article from The Daily Pennsylvanian's featured page.
+    Scrapes the headline article from The Daily Pennsylvanian's featured page.
     Returns:
         str: The headline text if found, otherwise an empty string.
     """
